@@ -31,9 +31,9 @@ suma=0
 cal=1000
 def segmentos(img2):
             res=0
-            A=img2[6:26,17:62]
-            B=img2[17:60,52:68]
-            C=img2[77:115,50:66]
+            A=img2[1:12,19:69]
+            B=img2[9:59,63:74]
+            C=img2[72:111,50:78]
             D=img2[115:131,5:48]
             E=img2[73:118,2:16]
             F=img2[30:65,1:39]
@@ -82,8 +82,8 @@ def main():
        ic=0
        aux=''
        aux2=0
-       xcar=54
-       ycar=50
+       xcar=56
+       ycar=51
        add=0
        token=True
        cap1=cv2.VideoCapture(1)
@@ -115,6 +115,7 @@ def main():
             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
             top_left = max_loc
             bottom_right = (top_left[0] + w, top_left[1] + h)
+            cv2.rectangle(auxi,top_left, bottom_right, 255, 1)
             puntox=i[215:232,405:419]
             puntoy=i[218:234,313:327]
             a=np.linalg.norm(puntox,1)
@@ -122,11 +123,11 @@ def main():
             
             print 'puntos',a,b
             print 'Punto:',(top_left[0],top_left[1],bottom_right[0],bottom_right[1])
-            if(top_left[0]>400 and top_left[0]<430 and bottom_right[1]<240):
+            if(top_left[0]>400 and top_left[0]<430 and bottom_right[1]<250):
                 puntoa=''
                 puntob='.'
                 print 'b'
-            elif(top_left[0]>=300 and top_left[0]<400 and bottom_right[1]<240):
+            elif(top_left[0]>=300 and top_left[0]<400 and bottom_right[1]<250):
                 puntoa='.'
                 puntob=''
                 print 'a'
@@ -146,14 +147,15 @@ def main():
             bottom_right = (top_left[0] + w, top_left[1] + h)
             
             ##print ('A',top_left,'B',bottom_right)
-            img=i[47:237,192:518]
+            img=i[60:237,192:510]
+            auxi=img
             imgaux=auxi[90:225,125:515]
             z=img
-            cv2.rectangle(auxi,top_left, bottom_right, 255, 1)
-            img11=img[35:61,16:85]#PH
-            img21=img[33:59,92:162]#MS
-            img31=img[32:58,169:238]#PPM
-            img41=img[31:56,244:316]#C°
+            
+            img11=img[30:57,16:85]#PH
+            img21=img[30:55,92:162]#MS
+            img31=img[25:50,169:238]#PPM
+            img41=img[25:45,244:316]#C°
 ##            img4=img[4:30,4:85]#C*
 ##          i= cv2.equalizeHist(i)  
             aux1=img
@@ -187,11 +189,13 @@ def main():
             kernel = np.ones((3,3))
             img = cv2.erode(img,kernel,iterations = 4)
           
-            try:   
-                    img0=img[xcar:(xcar+141),(ycar-36):(ycar-19)]
-                    img1=img[xcar:(xcar+141),ycar:(ycar+70)]
-                    img2=img[xcar:(xcar+141),(ycar+100):(ycar+170)]
-                    img3=img[xcar:(xcar+141),(ycar+187):(ycar+257)]
+            try:
+                    xcar=56
+                    ycar=51
+                    img0=img[(xcar+13):(xcar+120),(ycar-41):(ycar-15)]
+                    img1=img[xcar:(xcar+121),ycar:(ycar+76)]
+                    img2=img[(xcar+2):(xcar+121),(ycar+93):(ycar+169)]
+                    img3=img[(xcar-3):(xcar+119),(ycar+190):(ycar+261)]
                     print ('Numero 1 inicial',np.linalg.norm(img0,1))
                     if(np.linalg.norm(img0,1)>1500):
                                     numero0=1
@@ -199,18 +203,9 @@ def main():
                         numero0=0
 
                     
-                    
-                    
-                    
-                    
-                    
-                    numero,a,b,c,d,e,f,g=segmentos(img1)
-                    
                     numero3,a,b,c,d,e,f,g=segmentos(img3)
                     numero2,a,b,c,d,e,f,g=segmentos(img2)
-
-
-                    
+                    numero,a,b,c,d,e,f,g=segmentos(img1)
                     numero=float(str(numero0)+str(numero)+puntoa+str(numero2)+puntob+str(numero3))
                     print 'Numero de salida:',numero
                     estado=int(np.linalg.norm(batery,2))
@@ -223,8 +218,10 @@ def main():
                         flag='S'
                     if estado < 500:
                         flag='Fa'
-##                    print flag
+                    print flag
+
                     if(numero!=aux2):
+                        
                         cv2.imwrite("MS2.jpg",img)
                         im = Image.open('MS2.jpg')
                         output = StringIO.StringIO()
@@ -235,61 +232,33 @@ def main():
                         output = StringIO.StringIO()
                         im.save(output, "JPEG", quality=89)
                         encoded_string = base64.b64encode(output.getvalue())                        
-                        pubnub.publish().channel('canal1').message({'bat':flag,'text':value,'value':numero,'src':encoded_string,'src1':encoded_string1}).async(publish_callback)
+                        ##pubnub.publish().channel('canal1').message({'bat':flag,'text':value,'value':numero,'src':encoded_string,'src1':encoded_string1}).async(publish_callback)
                         ##time.sleep(0.5)
                         aux2=numero
-##                        
-##                        
-##                        
-##                
-##
-##                    
-##                    
-##                    
-####                    cv2.imshow('Hola',batery)
-####                    cv2.imshow('Hola1',auxi)
-####                    cv2.imshow('Hola2',img31)
-##                    cv2.imshow('A',auxi)
-####                    cv2.imshow('A',img11)
-####                    cv2.imshow('B',img21)
-####                    cv2.imshow('C',img31)
-####                    cv2.imshow('D',img41)
-####                    cv2.imshow('E',e)
-####                    cv2.imshow('F',f)
-####                    cv2.imshow('G',g)
-##                    
-##                    
-##
-##                    
-##                    
-##            
-            except(ValueError):
-                        print ValueError
-            elapsed_time = time.time () - starting_point
 
-            ##print (elapsed_time)
-            cv2.imshow('Hola1',z)
-##            cv2.imshow('Hola2',img1)
-##            cv2.imshow('Hola3',img2)
-##            cv2.imshow('Hola4',img3)
-            cv2.imshow('a',a)
-            cv2.imshow('b',b)
-            cv2.imshow('c',c)
-            cv2.imshow('d',d)
-            cv2.imshow('e',e)
-            cv2.imshow('f',puntoy)
-            cv2.imshow('g',puntox)
+                        
+                    cv2.imshow('Hola',batery)
+                    cv2.imshow('a',a)
+                    cv2.imshow('b',b)
+                    cv2.imshow('c',c)
+                    cv2.imshow('d',d)
+                    cv2.imshow('e',e)
+                    cv2.imshow('f',f)
+                    cv2.imshow('g',g)    
+            except:        
+                    
+                    print "Error de lectura"
+                    
             if (cv2.waitKey(1) & 0xFF==ord('q')):
-##                                cv2.imwrite("rebbot2.jpg",puntox)
-                                cap1.release()
-                                cv2.destroyAllWindows()
-                                break 
-
+                                    cv2.imwrite("rebbot1.jpg",img1)
+                                    cv2.imwrite("rebbot2.jpg",img2)
+                                    cv2.imwrite("rebbot3.jpg",img3)
+                                    cap1.release()
+                                    cv2.destroyAllWindows()
+                                    break 
 
 if __name__ == "__main__":
-    
-    
-    main()
-    pubnub.unsubscribe().channels("canal1").execute()
+        main()
+        pubnub.unsubscribe().channels("canal1").execute()
     
 
