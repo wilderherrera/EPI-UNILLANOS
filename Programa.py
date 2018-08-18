@@ -32,12 +32,12 @@ cal=1000
 def segmentos(img2):
             res=0
             A=img2[1:12,19:69]
-            B=img2[9:59,63:74]
+            B=img2[9:59,50:74]
             C=img2[72:111,50:78]
-            D=img2[115:131,5:48]
-            E=img2[73:118,2:16]
-            F=img2[30:65,1:39]
-            G=img2[58:83,20:53]
+            D=img2[95:131,10:52]
+            E=img2[73:109,2:16]
+            F=img2[10:55,1:20]
+            G=img2[50:75,15:59]
             a=np.linalg.norm(A,1)
             print (a,'A')
             b=np.linalg.norm(B,1)
@@ -82,7 +82,7 @@ def main():
        ic=0
        aux=''
        aux2=0
-       xcar=56
+       xcar=50
        ycar=51
        add=0
        token=True
@@ -148,7 +148,7 @@ def main():
             
             ##print ('A',top_left,'B',bottom_right)
             img=i[60:237,192:510]
-            auxi=img
+            
             imgaux=auxi[90:225,125:515]
             z=img
             
@@ -188,10 +188,10 @@ def main():
             img=cv2.bitwise_not(img)
             kernel = np.ones((3,3))
             img = cv2.erode(img,kernel,iterations = 4)
+         
           
             try:
-                    xcar=56
-                    ycar=51
+                    
                     img0=img[(xcar+13):(xcar+120),(ycar-41):(ycar-15)]
                     img1=img[xcar:(xcar+121),ycar:(ycar+76)]
                     img2=img[(xcar+2):(xcar+121),(ycar+93):(ycar+169)]
@@ -203,9 +203,12 @@ def main():
                         numero0=0
 
                     
-                    numero3,a,b,c,d,e,f,g=segmentos(img3)
-                    numero2,a,b,c,d,e,f,g=segmentos(img2)
+                    
                     numero,a,b,c,d,e,f,g=segmentos(img1)
+                    
+                    
+                    numero2,a,b,c,d,e,f,g=segmentos(img2)
+                    numero3,a,b,c,d,e,f,g=segmentos(img3)
                     numero=float(str(numero0)+str(numero)+puntoa+str(numero2)+puntob+str(numero3))
                     print 'Numero de salida:',numero
                     estado=int(np.linalg.norm(batery,2))
@@ -244,13 +247,14 @@ def main():
                     cv2.imshow('d',d)
                     cv2.imshow('e',e)
                     cv2.imshow('f',f)
-                    cv2.imshow('g',g)    
+                    cv2.imshow('g',g)
+                    cv2.imshow('todo',img3)    
             except:        
                     
                     print "Error de lectura"
                     
             if (cv2.waitKey(1) & 0xFF==ord('q')):
-                                    cv2.imwrite("rebbot1.jpg",img1)
+                                    cv2.imwrite("rebbot1.jpg",auxi)
                                     cv2.imwrite("rebbot2.jpg",img2)
                                     cv2.imwrite("rebbot3.jpg",img3)
                                     cap1.release()
